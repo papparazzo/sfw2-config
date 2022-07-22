@@ -1,0 +1,17 @@
+{
+    "name": "sfw2/config",
+    "type": "library",
+    "license": "GNU AFFERO GENERAL PUBLIC sfw2-config/LICENSE Version 3",
+
+    "require": {
+        "php": "^8.1",
+        "ext-gd": "*",
+        "ext-mbstring": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "SFW2\\Core\\": "src/"
+        }
+    }
+}
+
