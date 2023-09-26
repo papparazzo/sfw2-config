@@ -51,18 +51,21 @@ class Config implements ContainerInterface {
     }
 
     /**
-     * @throws \SFW2\Config\Exceptions\ContainerException
+     * @param array $values
+     * @return void
+     * @throws ContainerException
      */
-    protected function append(array $values, string $id = '') {
-        foreach ($values as $key => $item) {
+    protected function append(array $values): void {
+        foreach($values as $key => $items) {
+            if(!is_array($items)) {
+                throw new ContainerException("invalid structure given");
+            }
             if(!is_string($key)) {
                 throw new ContainerException("only associative arrays allowed!");
             }
-            if(is_array($item)) {
-                $this->append($item, $id . $key . self::STRING_SEPARATOR);
-                continue;
+            foreach($items as $id => $item) {
+                $this->conf[$key . self::STRING_SEPARATOR . $id] = $item;
             }
-            $this->conf[$id . $key] = $item;
         }
     }
 
