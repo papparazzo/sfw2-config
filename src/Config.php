@@ -28,7 +28,7 @@ use SFW2\Config\Exceptions\NotFoundException;
 
 class Config implements ContainerInterface {
 
-    protected const STRING_SEPARATOR = ':';
+    protected const STRING_SEPARATOR = '.';
 
     protected array $conf = [];
 
