@@ -33,7 +33,7 @@ class Config implements ContainerInterface {
     protected array $conf = [];
 
     /**
-     * @throws \SFW2\Config\Exceptions\ContainerException
+     * @throws ContainerException
      */
     public function __construct(array $config) {
         $this->append($config);
@@ -68,5 +68,4 @@ class Config implements ContainerInterface {
             }
         }
     }
-
 }
