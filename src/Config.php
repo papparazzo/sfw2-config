@@ -39,6 +39,10 @@ class Config implements ContainerInterface {
         $this->append($config);
     }
 
+    public function getAsArray(): array {
+        return $this->conf;
+    }
+
     public function get(string $id) {
         if(!$this->has($id)) {
             throw new NotFoundException();
