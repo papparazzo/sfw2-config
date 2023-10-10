@@ -3,3 +3,4 @@
 # netbeans project files
 /nbproject/
 /.idea
+/.phpunit.result.cache
