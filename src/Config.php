@@ -30,28 +30,28 @@ class Config implements ContainerInterface {
 
     protected const STRING_SEPARATOR = '.';
 
-    protected array $conf = [];
+    protected array $values = [];
 
     /**
      * @throws ContainerException
      */
-    public function __construct(array $config) {
-        $this->append($config);
+    public function __construct(array $values) {
+        $this->append($values);
     }
 
     public function getAsArray(): array {
-        return $this->conf;
+        return $this->values;
     }
 
     public function get(string $id) {
         if(!$this->has($id)) {
             throw new NotFoundException();
         }
-        return $this->conf[$id];
+        return $this->values[$id];
     }
 
     public function has(string $id): bool {
-        return isset($this->conf[$id]);
+        return isset($this->values[$id]);
     }
 
     /**
