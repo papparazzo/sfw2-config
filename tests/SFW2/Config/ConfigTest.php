@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SFW2\Config;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class ConfigTest extends TestCase
+final class ConfigTest extends TestCase
 {
 
     public function testConfig()
