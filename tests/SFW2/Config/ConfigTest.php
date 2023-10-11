@@ -32,6 +32,7 @@ final class ConfigTest extends TestCase
             [['abc' => ['a' => []]], 'abc.a',  []],
             [self::getData(), 'site.offline', false],
             [self::getData(), 'pathes.templates', ['SFW2\Boilerplate' =>  '../templates/']],
+            [self::getData(), 'misc.memoryLimit', '256M']
         ];
     }
 
