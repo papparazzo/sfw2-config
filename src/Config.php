@@ -22,7 +22,9 @@
 
 namespace SFW2\Config;
 
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SFW2\Config\Exceptions\ContainerException;
 use SFW2\Config\Exceptions\NotFoundException;
 
@@ -36,7 +38,7 @@ class Config implements ContainerInterface {
      * @throws ContainerException
      */
     public function __construct(array $values) {
-        $this->append($values);
+        $this->values = $values;
     }
 
     public function getAsArray(): array {
@@ -44,32 +46,26 @@ class Config implements ContainerInterface {
     }
 
     public function get(string $id) {
-        if(!$this->has($id)) {
-            throw new NotFoundException();
+        $tokens = explode(self::STRING_SEPARATOR, $id);
+        $array = $this->values;
+        foreach($tokens as $token) {
+            if(!isset($array[$token])) {
+                throw new NotFoundException();
+            }
+            $array = $array[$token];
         }
-        return $this->values[$id];
-    }
-
-    public function has(string $id): bool {
-        return isset($this->values[$id]);
+        return $array;
     }
 
     /**
-     * @param array $values
-     * @return void
-     * @throws ContainerException
+     * @throws ContainerExceptionInterface
      */
-    protected function append(array $values): void {
-        foreach($values as $key => $items) {
-            if(!is_array($items)) {
-                throw new ContainerException("invalid structure given");
-            }
-            if(!is_string($key)) {
-                throw new ContainerException("only associative arrays allowed!");
-            }
-            foreach($items as $id => $item) {
-                $this->conf[$key . self::STRING_SEPARATOR . $id] = $item;
-            }
+    public function has(string $id): bool {
+        try {
+            $this->get($id);
+        } catch(NotFoundExceptionInterface) {
+            return false;
         }
+        return true;
     }
 }
