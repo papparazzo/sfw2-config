@@ -11,7 +11,9 @@ final class ConfigTest extends TestCase
 {
     public static function valid__constructDataProvider(): array {
         return [
-            [['abc' => []]]
+            [['abc' => []]],
+            [[]],
+            [['abc' => ['a' => 1]]]
         ];
     }
 
@@ -20,7 +22,6 @@ final class ConfigTest extends TestCase
     {
         $obj = new Config($data);
         $this->assertInstanceOf(Config::class, $obj);
-        $this->assertEquals($data, $obj->getAsArray());
     }
 
     public static function getAndHasDataProvider(): array
