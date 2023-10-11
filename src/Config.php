@@ -38,7 +38,7 @@ class Config implements ContainerInterface {
      * @throws ContainerException
      */
     public function __construct(array $values) {
-        $this->values = $values;
+        $this->append($values);
     }
 
     public function getAsArray(): array {
@@ -46,26 +46,33 @@ class Config implements ContainerInterface {
     }
 
     public function get(string $id) {
-        $tokens = explode(self::STRING_SEPARATOR, $id);
-        $array = $this->values;
-        foreach($tokens as $token) {
-            if(!isset($array[$token])) {
-                throw new NotFoundException();
-            }
-            $array = $array[$token];
+        if(!$this->has($id)) {
+            throw new NotFoundException();
         }
-        return $array;
+        return $this->values[$id];
+    }
+
+    public function has(string $id): bool {
+        return isset($this->values[$id]);
     }
 
     /**
-     * @throws ContainerExceptionInterface
+     * @param array $values
+     * @return void
+     * @throws ContainerException
      */
-    public function has(string $id): bool {
-        try {
-            $this->get($id);
-        } catch(NotFoundExceptionInterface) {
-            return false;
+    protected function append(array $values): void {
+        foreach($values as $key => $items) {
+            if(!is_array($items)) {
+                throw new ContainerException("invalid structure given");
+            }
+            if(!is_string($key)) {
+                throw new ContainerException("only associative arrays allowed!");
+            }
+            $this->values[$key] = $items;
+            foreach($items as $id => $item) {
+                $this->values[$key . self::STRING_SEPARATOR . $id] = $item;
+            }
         }
-        return true;
     }
 }
