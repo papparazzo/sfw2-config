@@ -22,13 +22,12 @@
 
 namespace SFW2\Config;
 
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use SFW2\Config\Exceptions\ContainerException;
 use SFW2\Config\Exceptions\NotFoundException;
 
-class Config implements ContainerInterface {
+class Config implements ContainerInterface
+{
 
     protected const STRING_SEPARATOR = '.';
 
@@ -37,22 +36,26 @@ class Config implements ContainerInterface {
     /**
      * @throws ContainerException
      */
-    public function __construct(array $values) {
+    public function __construct(array $values)
+    {
         $this->append($values);
     }
 
-    public function getAsArray(): array {
+    public function getAsArray(): array
+    {
         return $this->values;
     }
 
-    public function get(string $id) {
-        if(!$this->has($id)) {
+    public function get(string $id)
+    {
+        if (!$this->has($id)) {
             throw new NotFoundException();
         }
         return $this->values[$id];
     }
 
-    public function has(string $id): bool {
+    public function has(string $id): bool
+    {
         return isset($this->values[$id]);
     }
 
@@ -61,16 +64,17 @@ class Config implements ContainerInterface {
      * @return void
      * @throws ContainerException
      */
-    protected function append(array $values): void {
-        foreach($values as $key => $items) {
-            if(!is_array($items)) {
+    protected function append(array $values): void
+    {
+        foreach ($values as $key => $items) {
+            if (!is_array($items)) {
                 throw new ContainerException("invalid structure given");
             }
-            if(!is_string($key)) {
+            if (!is_string($key)) {
                 throw new ContainerException("only associative arrays allowed!");
             }
             $this->values[$key] = $items;
-            foreach($items as $id => $item) {
+            foreach ($items as $id => $item) {
                 $this->values[$key . self::STRING_SEPARATOR . $id] = $item;
             }
         }
