@@ -6,6 +6,10 @@ namespace SFW2\Config;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use SFW2\Config\Exceptions\ContainerException;
+use SFW2\Config\Exceptions\NotFoundException;
 
 final class ConfigTest extends TestCase
 {
@@ -17,11 +21,14 @@ final class ConfigTest extends TestCase
         ];
     }
 
+    /**
+     * @throws ContainerException
+     */
     #[DataProvider('valid__constructDataProvider')]
     public function testValid__construct(array $data): void
     {
         $obj = new Config($data);
-        $this->assertInstanceOf(Config::class, $obj);
+        ConfigTest::assertInstanceOf(Config::class, $obj);
     }
 
     public static function getAndHasDataProvider(): array
@@ -37,14 +44,61 @@ final class ConfigTest extends TestCase
         ];
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerException
+     */
     #[DataProvider('getAndHasDataProvider')]
     public function testGetAndHas(array $data, string $key, mixed $value): void
     {
         $obj = new Config($data);
-        $this->assertTrue($obj->has($key));
-        $this->assertEquals($value, $obj->get($key));
+        ConfigTest::assertTrue($obj->has($key));
+        ConfigTest::assertSame($value, $obj->get($key));
     }
 
+    public static function getGetAsArrayDataProvider(): array
+    {
+        return [
+            [['abc' => ['a' => 1]], ['abc' => ['a' => 1], 'abc.a' => 1]],
+        ];
+    }
+
+    /**
+     * @throws ContainerException
+     */
+    #[DataProvider('getGetAsArrayDataProvider')]
+    public static function testGetAsArray(array $data, array $result): void
+    {
+        $obj = new Config($data);
+        ConfigTest::assertSame($result, $obj->getAsArray());
+    }
+
+    /**
+     * @throws ContainerException
+     * @throws ContainerExceptionInterface
+     */
+    public function testNotFound(): void
+    {
+        $this->expectException(NotFoundException::class);
+        $obj = new Config([]);
+        $obj->get('does_not_exist');
+    }
+
+    public static function getInvalidDataDataProvider(): array
+    {
+        return [
+            [['111' => 'abc']],
+            [[111 => []]],
+        ];
+    }
+
+    #[DataProvider('getInvalidDataDataProvider')]
+    public function testExceptionOnConstruct(array $data): void
+    {
+        $this->expectException(ContainerException::class);
+        new Config($data);
+    }
 
     public static function getData(): array
     {
